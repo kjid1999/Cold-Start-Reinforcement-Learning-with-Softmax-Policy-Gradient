@@ -41,13 +41,15 @@ class Updater:
                     zt_idx = Categorical(probs=prob).sample()
                     z_t = self.voc[zt_idx]
 
-                    L_BBSPG = L_BBSPG.detach()
                     L_BBSPG -= torch.log(model_output[zt_idx])
-                    L_BBSPG.backward()
                 
                 else:
                     prob = model_output
                     z_t = self.voc[Categorical(probs=prob).sample()]
 
                 z.append(z_t)
+
+        L_BBSPG /= self.J
+        L_BBSPG.backward()
+        
         return
